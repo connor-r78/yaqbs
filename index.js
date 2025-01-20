@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
   if (req.url === "/") {
-    const filePath = path.join(__dirname, "public", "index.html");
+    const filePath = path.join(__dirname, "index.html");
     fs.readFile(filePath, (err, data) => {
       if (err) {
         res.writeHead(500, { "Content-Type": "text/plain" });
