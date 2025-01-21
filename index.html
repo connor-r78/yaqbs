@@ -6,6 +6,15 @@
     <meta name="google-adsense-account" content="ca-pub-9760461879923318">
     <title>YAQBS</title>
     <style>
+        #answer {
+            font-weight: bold;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
     </style>
   </head>
   <body>
@@ -15,16 +24,65 @@
     <p id="question">Question: </p>
     
     <script>
-        var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?"];
+        var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?", "This organization demanded a provision of indemnity in the “Solemn Engagement.” The Earl of Essex was prevented from leading this force by the Self-Denying Ordinance. Men opposed to this force were removed from office in Pride’s Purge. Thomas (*) Fairfax led this group to victory at Naseby [NAYZ-bee] against Charles I [“the first”]. Oliver Cromwell was a cavalry commander in—for 10 points—what Roundhead army that won the First English Civil War?"];
+        var answers = ["/color//farbe[Farbenlehre]/farbenlehre[Farbenlehre]"]
     
         var clickerButton = document.getElementById("buzzButton");
         var nextButton = document.getElementById("nextButton");
         var questionDisplay = document.getElementById("question");
 
-        var question = questions[0];
+        var questionNum = 0;
         var index = 0;
-        
+
+        var question = questions[questionNum];
         var running = false;
+        
+        clickerButton.disabled = true;
+
+        function correct() {
+            var grabAns = document.getElementById("answer");
+            grabAns.setAttribute("class", "correct")
+            clear();
+        }
+        
+        function incorrect() {
+            var grabAns = document.getElementById("answer");
+            grabAns.setAttribute("class", "wrong")
+            running = true;
+            displayLetterByLetter();
+        }
+
+        function clear() {
+            questionDisplay.innerText = " "
+            var pastQuestion = document.createElement("p");
+            pastQuestion.innerText = questions[questionNum];
+            questionDisplay.parentNode.insertBefore(pastQuestion, questionDisplay.nextSibling);
+            nextButton.disabled = false;
+        }
+
+        function evalAnswer(answer) {
+            answer = answer.toLowerCase();
+            correctAns = "";
+            var evalStr = answers[questionNum];
+            if (evalStr.includes("//")) {
+                var finding = true;
+                var i = 1;
+                while (finding) {
+                    if (evalStr.charAt(evalStr.indexOf("//")-i) === "/") {
+                        finding = false;
+                        if (correctAns === answer) {
+                            correct();
+                        } else {
+                            incorrect();
+                        }
+                    } else {
+                        correctAns = evalStr.charAt(evalStr.indexOf("//")-i) + correctAns;
+                    }
+                    i++;
+                }
+            }
+            
+        }
 
         function displayLetterByLetter() { 
             if (running && index < question.length) { 
@@ -35,47 +93,53 @@
         }
         
         var nextClick = function() {
-            running = true;
-            index = 0;
-            questionDisplay.innerText = " "
-            displayLetterByLetter();
-        }
-        
-        nextButton.addEventListener("click", nextClick);
-
-        var buzzClick = function () {
-        // Create input field
-        var input = document.createElement("input");
-        running = false
-        input.setAttribute("id", "input");
-        input.setAttribute("type", "text");
-        clickerButton.parentNode.insertBefore(input, clickerButton.nextSibling); 
-
-        // Create Answer button
-        var answerButton = document.createElement("button");
-        answerButton.innerText = "Answer";
-        answerButton.setAttribute("id", "answerButton");
-        input.parentNode.insertBefore(answerButton, input.nextSibling); 
-
-        // Disable Buzz button
-        clickerButton.disabled = true;
-
-        // Define answerClick inside buzzClick to access answerButton
-        var answerClick = function () {
-          var answer = document.getElementById("input").value;
-          var answerOutput = document.createElement("p");
-          answerOutput.innerText = answer;
-          questionDisplay.parentNode.insertBefore(answerOutput, questionDisplay.nextSibling);
-
-          // Disable Answer button
-          answerButton.remove();
-          input.remove();
+              clickerButton.disabled = false;
+              running = true;
+              index = 0;
+              questionDisplay.innerText = " ";
+              //answerOutput.innerText = " ";
+              nextButton.disabled = true;
+              displayLetterByLetter();
+          }
           
-          clickerButton.disabled = false;
-        };
-
-        // Add event listener for the Answer button
-        answerButton.addEventListener("click", answerClick);
+          nextButton.addEventListener("click", nextClick);
+  
+          var buzzClick = function () {
+          // Create input field
+          var input = document.createElement("input");
+          running = false
+          input.setAttribute("id", "input");
+          input.setAttribute("type", "text");
+          clickerButton.parentNode.insertBefore(input, clickerButton.nextSibling); 
+  
+          // Create Answer button
+          var answerButton = document.createElement("button");
+          answerButton.innerText = "Answer";
+          answerButton.setAttribute("id", "answerButton");
+          input.parentNode.insertBefore(answerButton, input.nextSibling); 
+  
+          // Disable Buzz button
+          clickerButton.disabled = true;
+  
+          // Define answerClick inside buzzClick to access answerButton
+          var answerClick = function () {
+            var answer = document.getElementById("input").value;
+            var answerOutput = document.createElement("p");
+            answerOutput.setAttribute("id", "answer");
+            answerOutput.innerText = answer;
+            questionDisplay.parentNode.insertBefore(answerOutput, questionDisplay.nextSibling);
+  
+            // Disable Answer button
+            answerButton.remove();
+            input.remove();
+            
+            evalAnswer(answer);
+            
+            clickerButton.disabled = true;
+          };
+  
+          // Add event listener for the Answer button
+          answerButton.addEventListener("click", answerClick);
       };
 
       // Add event listener for the Buzz button
