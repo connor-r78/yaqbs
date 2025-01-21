@@ -36,6 +36,7 @@
 
         var question = questions[questionNum];
         var running = false;
+        var finding = true;
         
         clickerButton.disabled = true;
 
@@ -61,17 +62,19 @@
         }
 
         function evalAnswer(answer) {
+            var searching = true;
             answer = answer.toLowerCase();
             correctAns = "";
             var evalStr = answers[questionNum];
             if (evalStr.includes("//")) {
-                var finding = true;
+                finding = true;
                 var i = 1;
                 while (finding) {
-                    if (evalStr.charAt(evalStr.indexOf("//")-i) === "/") {
+                if (evalStr.charAt(evalStr.indexOf("//")-i) === "/") {
                         finding = false;
-                        if (correctAns === answer) {
+                        if (answer.includes(correctAns)) {
                             correct();
+                            searching = false; 
                         } else {
                             incorrect();
                         }
@@ -81,7 +84,43 @@
                     i++;
                 }
             }
-            
+            if (evalStr.includes("[") && searching) {
+                beforeWord = "";
+                finding = true;
+                var i = 1;
+                while (finding) {
+                    if (evalStr.charAt(evalStr.indexOf("]")-i) === "[") {
+                        finding = false;
+                    } else {
+                        beforeWord = evalStr.charAt(evalStr.indexOf("]")-i) + beforeWord;
+                    }
+                    i++;
+                }
+                
+                clickerButton.innerText = !document.getElementById("question").innerHTML.includes(beforeWord);
+                
+                if (!document.getElementById("question").innerHTML.includes(beforeWord)) {
+                    correctAns = "";
+                    finding = true;
+                    var i = 1;
+                    while (finding) {
+                    if (evalStr.charAt(evalStr.indexOf("[")-i) === "/") {
+                        finding = false;
+                        if (answer.includes(correctAns)) {
+                            correct();
+                            searching = false;
+                        } else {
+                            incorrect();
+                        }
+                    } else {
+                        correctAns = evalStr.charAt(evalStr.indexOf("[")-i) + correctAns;
+                    }
+                    i++; 
+                }
+                
+            }
+        }
+          
         }
 
         function displayLetterByLetter() { 
