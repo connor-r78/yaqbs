@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-9760461879923318">
     <title>YAQBS</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9760461879923318"
-     crossorigin="anonymous"></script>
     <style>
-        
     </style>
   </head>
   <body>
@@ -16,12 +13,44 @@
     <button id="buzzButton">Buzz</button>
     
     <script>
-        var clickerButton = document.getElementById("buzzButton");
-        var onButtonClick = function() {
-            var input = document.createElement("input");
-            document.body.appendChild(input);
+      var clickerButton = document.getElementById("buzzButton");
+
+      var buzzClick = function () {
+        // Create input field
+        var input = document.createElement("input");
+        input.setAttribute("id", "input");
+        input.setAttribute("type", "text");
+        clickerButton.parentNode.insertBefore(input, clickerButton.nextSibling); 
+
+        // Create Answer button
+        var answerButton = document.createElement("button");
+        answerButton.innerText = "Answer";
+        answerButton.setAttribute("id", "answerButton");
+        input.parentNode.insertBefore(answerButton, input.nextSibling); 
+
+        // Disable Buzz button
+        clickerButton.disabled = true;
+
+        // Define answerClick inside buzzClick to access answerButton
+        var answerClick = function () {
+          var answer = document.getElementById("input").value;
+          var answerOutput = document.createElement("p");
+          answerOutput.innerText = answer;
+          answerButton.parentNode.insertBefore(answerOutput, answerButton.nextSibling);
+
+          // Disable Answer button
+          answerButton.remove();
+          input.remove();
+          
+          clickerButton.disabled = false;
         };
-        clickerButton.addEventListener("click", onButtonClick);
+
+        // Add event listener for the Answer button
+        answerButton.addEventListener("click", answerClick);
+      };
+
+      // Add event listener for the Buzz button
+      clickerButton.addEventListener("click", buzzClick);
     </script>
   </body>
 </html>
