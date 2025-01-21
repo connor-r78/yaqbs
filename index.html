@@ -11,13 +11,42 @@
   <body>
     <h1>YAQBS</h1>
     <button id="buzzButton">Buzz</button>
+    <button id="nextButton">Next</button>
+    <p id="question">Question: </p>
     
     <script>
-      var clickerButton = document.getElementById("buzzButton");
+        var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?"];
+    
+        var clickerButton = document.getElementById("buzzButton");
+        var nextButton = document.getElementById("nextButton");
+        var questionDisplay = document.getElementById("question");
 
-      var buzzClick = function () {
+        var question = questions[0];
+        var index = 0;
+        
+        var running = false;
+
+        function displayLetterByLetter() { 
+            if (running && index < question.length) { 
+                document.getElementById("question").innerHTML += question.charAt(index); 
+                index++; 
+                setTimeout(displayLetterByLetter, 50);
+            }
+        }
+        
+        var nextClick = function() {
+            running = true;
+            index = 0;
+            questionDisplay.innerText = " "
+            displayLetterByLetter();
+        }
+        
+        nextButton.addEventListener("click", nextClick);
+
+        var buzzClick = function () {
         // Create input field
         var input = document.createElement("input");
+        running = false
         input.setAttribute("id", "input");
         input.setAttribute("type", "text");
         clickerButton.parentNode.insertBefore(input, clickerButton.nextSibling); 
@@ -36,7 +65,7 @@
           var answer = document.getElementById("input").value;
           var answerOutput = document.createElement("p");
           answerOutput.innerText = answer;
-          answerButton.parentNode.insertBefore(answerOutput, answerButton.nextSibling);
+          questionDisplay.parentNode.insertBefore(answerOutput, questionDisplay.nextSibling);
 
           // Disable Answer button
           answerButton.remove();
