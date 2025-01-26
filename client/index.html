@@ -29,15 +29,10 @@
       
         var socket = io();
         var recordBuzz = function() {
-          socket.emit("someone buzzed", {
+          socket.emit("buzz", {
             playerID:playerID
           });
         }
-      socket.on("someone buzzed", function() {
-        socket.emit("yay);
-        var buzzer = document.getElementById("buzzButton");
-        buzzer.disabled = true;
-      });
     </script>
   </head>
   <body>
