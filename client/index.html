@@ -33,6 +33,14 @@
             playerID:playerID
           });
         }
+        var getQuestionNum = function(questionsLength) {
+          socket.emit("getQuestionNum", {
+            questionsLength:questionsLength
+          })
+        }
+        socket.on("", function(data) {
+          
+        });
     </script>
   </head>
   <body>
@@ -163,6 +171,7 @@
             clickerButton.disabled = false;
             running = true;
             correct = false;
+            getQuestionNum(questions.length);
             questionNum = Math.floor(Math.random() * questions.length);
             question = questions[questionNum];
             index = 0;
