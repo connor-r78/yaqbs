@@ -1,12 +1,18 @@
-const express = require("express");
-const app = express();
+var express = require("express");
+var app = express();
+var serv = require("http").Server(app);
 
-const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  res.send("🚀 Hello from Render!");
+app.get("/", function(reg, res) {
+  res.sendFile(__dirname + "/client/index.html");
 });
+app.use("/client",express.static(__dirname + "/client"));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+serv.listen(2000);
+
+var io = require("socket.io") (serv,{});
+io.sockets.on("connection", function(socket) {
+  console.log("socket connection");
+  socket.on("happy",function() {
+    console.log("happy");
+  });
 });

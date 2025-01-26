@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-9760461879923318">
+    <title>YAQBS</title>
+    <style>
+        body {
+            background-color: lightgray;
+        }
+        h1 {
+            color: rgb(150, 0, 0);
+            font-family: 'Brush Script MT', cursive;
+        }
+        #answer {
+            font-weight: bold;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+    </style>
+    <script src="https://cdn.socket.io/socket/io-1.4.5.js"></script>
+    <script>
+        var socket = io();
+        socket.emit("happy");
+    </script>
+  </head>
+  <body>
+    <h1>yaqbs</h1>
+    <button id="buzzButton">Buzz</button>
+    <button id="nextButton">Next</button>
+    <p id="question">Question: </p>
+    
+    <script>
+        var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?", "This organization demanded a provision of indemnity in the “Solemn Engagement.” The Earl of Essex was prevented from leading this force by the Self-Denying Ordinance. Men opposed to this force were removed from office in Pride’s Purge. Thomas (*) Fairfax led this group to victory at Naseby against Charles I. Oliver Cromwell was a cavalry commander in—for 10 points—what Roundhead army that won the First English Civil War?"];
+        var answers = [
+            ["Colors", "color", "colors", "farbe~Zur Far=", "farbelenhre~Zur Far="],
+            ["The New Model Army", "new model", "new model army", "the new model army", "%parliamentary army", "%parliamentarian army", "%roundhead~what Round=", "%roundheads~what Round="]
+        ];
+    
+        var clickerButton = document.getElementById("buzzButton");
+        var nextButton = document.getElementById("nextButton");
+        var questionDisplay = document.getElementById("question");
+
+        var questionNum = 0;
+        var index = 0;
+
+        var question = questions[questionNum];
+        var running = false;
+        var finding = true;
+        var timing = false;
+        
+        var ansCorrect = false;
+        
+        clickerButton.disabled = true;
+        
+        function incorrect() {
+            var grabAns = document.getElementById("answer");
+            grabAns.setAttribute("id", "answer")
+            grabAns.setAttribute("class", "wrong")
+            running = true;
+            if (index != question.length) {
+                grabAns.innerText += " (-5)"
+            }
+            displayLetterByLetter();
+        }
+        
+        function clear() {
+            questionDisplay.innerText = " ";
+            var pastQuestion = document.createElement("p");
+            pastQuestion.innerText = questions[questionNum];
+            questionDisplay.parentNode.insertBefore(pastQuestion, questionDisplay.nextSibling);
+            if (!ansCorrect) {
+                var pastAnswer = document.createElement("p");
+                pastAnswer.innerText = "Correct Answer: " + answers[questionNum][0];
+                pastAnswer.setAttribute("id", "answer");
+                pastQuestion.parentNode.insertBefore(pastAnswer, pastQuestion.nextSibling);
+            }
+            nextButton.disabled = false;
+        }
+
+        function evalAnswer(answer) {
+            var acceptedAnswers = answers[questionNum];
+            for (i = 0; i < acceptedAnswers.length; i++) {
+                evalStr = acceptedAnswers[i];
+                if (evalStr.includes(answer)) {
+                    if (!evalStr.includes("=")) {
+                        var grabAns = document.getElementById("answer");
+                        if (!evalStr.includes("%")) {
+                            grabAns.setAttribute("class", "correct");
+                            ansCorrect = true;
+                            i = acceptedAnswers.length;
+                            if (document.getElementById("question").innerText.includes("(*)")) {
+                                grabAns.innerText += " (+10)"
+                            } else {
+                                grabAns.innerText += " (+15)"
+                            }
+                            clear();
+                        } else {
+                            grabAns.innerText += " (Prompt)"
+                            ansCorrect = true;
+                            buzzClick();
+                        }
+                    } else {
+                        beforeWord = "";
+                        finding = true;
+                        var i = 1;
+                        while (finding) {
+                            if (evalStr.charAt(evalStr.indexOf("=")-i) === "~") {
+                                finding = false;
+                            } else {
+                                beforeWord = evalStr.charAt(evalStr.indexOf("=")-i) + beforeWord;
+                            }
+                            i++;
+                        }
+                        if (!document.getElementById("question").innerText.includes(beforeWord)) {
+                            var grabAns = document.getElementById("answer");
+                            if (!evalStr.includes("%")) {
+                                grabAns.setAttribute("class", "correct")
+                                ansCorrect = true;
+                                i = acceptedAnswers.length;
+                                clear(); 
+                            } else {
+                                grabAns.innerText += " (Prompt)"
+                                ansCorrect = true;
+                                buzzClick();
+                            }
+                            
+                        } else {
+                            incorrect();
+                        }
+                    }
+                }
+            }
+            if (ansCorrect === false) {
+                incorrect();
+            }
+        }
+
+        function displayLetterByLetter() { 
+            if (running && index < question.length) { 
+                document.getElementById("question").innerHTML += question.charAt(index); 
+                index++; 
+                setTimeout(displayLetterByLetter, 50);
+            } else if (index === question.length) {
+                timing = true;
+                timerClear = setTimeout(clear, 3000);
+                timerNextClick = setTimeout(nextClick, 3010);
+            }
+        }
+        
+        var nextClick = function() {
+            clickerButton.disabled = false;
+            running = true;
+            correct = false;
+            questionNum = Math.floor(Math.random() * questions.length);
+            question = questions[questionNum];
+            index = 0;
+            questionDisplay.innerText = " ";
+            nextButton.disabled = true;
+            displayLetterByLetter();
+        }
+          
+        nextButton.addEventListener("click", nextClick);
+  
+        var buzzClick = function () {
+            if (timing) {
+                clearTimeout(timerClear);
+                clearTimeout(timerNextClick);
+            }
+          // Create input field
+          var input = document.createElement("input");
+          running = false
+          input.setAttribute("id", "input");
+          input.setAttribute("type", "text");
+          clickerButton.parentNode.insertBefore(input, clickerButton.nextSibling); 
+  
+          // Create Answer button
+          var answerButton = document.createElement("button");
+          answerButton.innerText = "Answer";
+          answerButton.setAttribute("id", "answerButton");
+          input.parentNode.insertBefore(answerButton, input.nextSibling); 
+  
+          // Disable Buzz button
+          clickerButton.disabled = true;
+  
+          // Define answerClick inside buzzClick to access answerButton
+          var answerClick = function () {
+            var answer = document.getElementById("input").value;
+            var answerOutput = document.createElement("p");
+            answerOutput.setAttribute("id", "answer");
+            answerOutput.innerText = answer;
+            questionDisplay.parentNode.insertBefore(answerOutput, questionDisplay.nextSibling);
+  
+            // Disable Answer button
+            answerButton.remove();
+            input.remove();
+            evalAnswer(answer.toLowerCase());
+            
+            clickerButton.disabled = true;
+          };
+  
+          // Add event listener for the Answer button
+          answerButton.addEventListener("click", answerClick);
+      };
+
+      // Add event listener for the Buzz button
+      clickerButton.addEventListener("click", buzzClick);
+    </script>
+  </body>
+</html>
