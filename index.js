@@ -12,7 +12,11 @@ serv.listen(2000);
 var io = require("socket.io") (serv,{});
 io.sockets.on("connection", function(socket) {
   console.log("socket connection");
-  socket.on("happy",function() {
-    console.log("happy");
+  socket.on("happy",function(data) {
+    console.log("happy because " + data.reason);
+  });
+
+  socket.emit("serverMsg", {
+    msg:"hello",
   });
 });
