@@ -25,21 +25,24 @@
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        var playerID = Math.random();
+      
         var socket = io();
-        var happy = function() {
-          socket.emit("happy", {
-            reason:"its my brithday"
+        var recordBuzz = function() {
+          socket.emit("someone buzzed", {
+            playerID:playerID
           });
         }
-
-        socket.on("serverMsg", function(data){
-          console.log(data.msg);
-        })
+      socket.on("someone buzzed", function() {
+        socket.emit("yay);
+        var buzzer = document.getElementById("buzzButton");
+        buzzer.disabled = true;
+      });
     </script>
   </head>
   <body>
     <h1>yaqbs</h1>
-    <button id="buzzButton" onclick="happy()">Buzz</button>
+    <button id="buzzButton" onclick="recordBuzz()">Buzz</button>
     <button id="nextButton">Next</button>
     <p id="question">Question: </p>
     
@@ -95,7 +98,7 @@
             var acceptedAnswers = answers[questionNum];
             for (i = 0; i < acceptedAnswers.length; i++) {
                 evalStr = acceptedAnswers[i];
-                if (evalStr.includes(answer)) {
+                if (evalStr.includes(answer) && answer != "" && answer != " ") {
                     if (!evalStr.includes("=")) {
                         var grabAns = document.getElementById("answer");
                         if (!evalStr.includes("%")) {
