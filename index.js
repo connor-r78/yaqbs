@@ -15,4 +15,7 @@ io.sockets.on("connection", function(socket) {
   socket.on("buzz",function(data) {
     console.log("buzz from " + data.playerID);
   });
+  socket.on("getQuestionNum",function(data) {
+    console.log("length of questions is " + data.questionsLength);
+  });
 });
