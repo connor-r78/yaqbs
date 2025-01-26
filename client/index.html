@@ -26,6 +26,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var playerID = Math.random();
+        var questionNum = 0;
       
         var socket = io();
         var recordBuzz = function() {
@@ -38,8 +39,16 @@
             questionsLength:questionsLength
           })
         }
-        socket.on("", function(data) {
-          
+        socket.on("questionNum", function(data) {
+          clickerButton.disabled = false;
+          running = true;
+          correct = false;
+          index = 0;
+          questionDisplay.innerText = " ";
+          nextButton.disabled = true;
+          questionNum = data.questionNum;
+          question = questions[questionNum]
+          displayLetterByLetter();
         });
     </script>
   </head>
@@ -60,15 +69,15 @@
         var nextButton = document.getElementById("nextButton");
         var questionDisplay = document.getElementById("question");
 
-        var questionNum = 0;
         var index = 0;
-
-        var question = questions[questionNum];
+      
         var running = false;
         var finding = true;
         var timing = false;
         
         var ansCorrect = false;
+
+        var question = " ";
         
         clickerButton.disabled = true;
         
@@ -168,16 +177,7 @@
         }
         
         var nextClick = function() {
-            clickerButton.disabled = false;
-            running = true;
-            correct = false;
             getQuestionNum(questions.length);
-            questionNum = Math.floor(Math.random() * questions.length);
-            question = questions[questionNum];
-            index = 0;
-            questionDisplay.innerText = " ";
-            nextButton.disabled = true;
-            displayLetterByLetter();
         }
           
         nextButton.addEventListener("click", nextClick);
