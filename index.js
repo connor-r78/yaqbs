@@ -16,6 +16,10 @@ io.sockets.on("connection", function(socket) {
     console.log("buzz from " + data.playerID);
   });
   socket.on("getQuestionNum",function(data) {
-    console.log("length of questions is " + data.questionsLength);
+    var questionNum = Math.floor(Math.random() * data.questionsLength);
+    socket.emit("questionNum", {
+      questionNum:questionNum
+    });
+    console.log("questionNum broadcasted was " + questionNum);
   });
 });
