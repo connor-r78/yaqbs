@@ -1,12 +1,9 @@
 {
-  "name": "render-test-app",
+  "name": "html-server",
   "version": "1.0.0",
-  "description": "A simple app to test Render deployment",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "dependencies": {
-    "express": "^4.18.2"
-  }
+  "dependencies": {}
 }
