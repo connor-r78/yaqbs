@@ -26,12 +26,20 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
-        socket.emit("happy");
+        var happy = function() {
+          socket.emit("happy", {
+            reason:"its my brithday"
+          });
+        }
+
+        socket.on("serverMsg", function(data){
+          console.log(data.msg);
+        })
     </script>
   </head>
   <body>
     <h1>yaqbs</h1>
-    <button id="buzzButton">Buzz</button>
+    <button id="buzzButton" onclick="happy()">Buzz</button>
     <button id="nextButton">Next</button>
     <p id="question">Question: </p>
     
