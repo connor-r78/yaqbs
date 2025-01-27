@@ -95,12 +95,6 @@
             cell2.innerHTML = cell2Str;
         }
 
-        function deleteRows(startingRow, numRows) {
-            for (i = 0; i < numRows - 1; i++) {
-                table.deleteRow(i + startingRow);
-            }
-        }
-
         function sortTable() {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("myTable");
@@ -127,8 +121,9 @@
         socket.on("update", function(data) {
             for(var i = 0; i < data.length; i++) {
                 addRow(data[i].name, data[i].score);
+                table.deleteRow(data.length + 1);
             }
-            deleteRows(data.length, data.length)
+            sortTable();
         });
 
     </script>
