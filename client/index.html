@@ -13,6 +13,23 @@
             color: rgb(150, 0, 0);
             font-family: 'Brush Script MT', cursive;
         }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        td, th {
+          border: 1px solid #000000;
+          background-color: #ffffff;
+          text-align: left;
+          padding: 8px;
+        }
+        #left {
+            float: left;
+        }
+        #right {
+            float: right;
+        }
         #answer {
             font-weight: bold;
         }
@@ -25,14 +42,11 @@
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var playerID = Math.random();
         var questionNum = 0;
-      
+        
         var socket = io();
         var recordBuzz = function() {
-          socket.emit("buzz", {
-            playerID:playerID
-          });
+          socket.emit("buzz");
         }
         var getQuestionNum = function(questionsLength) {
           socket.emit("getQuestionNum", {
@@ -50,15 +64,40 @@
           question = questions[questionNum]
           displayLetterByLetter();
         });
+
+        socket.on("update", function(data) {
+          
+        });
     </script>
   </head>
   <body>
     <h1>yaqbs</h1>
-    <button id="buzzButton" onclick="recordBuzz()">Buzz</button>
-    <button id="nextButton">Next</button>
-    <p id="question">Question: </p>
+    <div id = "left">
+        <button id="buzzButton" onclick="recordBuzz()">Buzz</button>
+        <button id="nextButton">Next</button>
+        <p id="question">Question: </p>
+    </div>
+    
+    <div id = "right">
+        <table id = "scoreTable">
+            <tr>
+                <th>Name</th>
+                <th>Score</th>
+            </tr>
+            <tr></tr>
+        </table>
+    </div>
     
     <script>
+        function addRow() {
+            var table = document.getElementById("scoreTable");
+            var row = table.insertRow(2);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            cell1.innerHTML = "NEW CELL1";
+            cell2.innerHTML = "NEW CELL2";
+        }
+        
         var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?", "This organization demanded a provision of indemnity in the “Solemn Engagement.” The Earl of Essex was prevented from leading this force by the Self-Denying Ordinance. Men opposed to this force were removed from office in Pride’s Purge. Thomas (*) Fairfax led this group to victory at Naseby against Charles I. Oliver Cromwell was a cavalry commander in—for 10 points—what Roundhead army that won the First English Civil War?"];
         var answers = [
             ["Colors", "color", "colors", "farbe~Zur Far=", "farbelenhre~Zur Far="],
