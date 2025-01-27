@@ -64,10 +64,6 @@
           question = questions[questionNum]
           displayLetterByLetter();
         });
-
-        socket.on("update", function(data) {
-          
-        });
     </script>
   </head>
   <body>
@@ -87,17 +83,25 @@
             <tr></tr>
         </table>
     </div>
-    
+
     <script>
-        function addRow() {
+        function addRow(cell1Str, cell2Str) {
             var table = document.getElementById("scoreTable");
             var row = table.insertRow(2);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
-            cell1.innerHTML = "NEW CELL1";
-            cell2.innerHTML = "NEW CELL2";
+            cell1.innerHTML = cell1Str;
+            cell2.innerHTML = cell2Str;
         }
-        
+      
+        socket.on("update", function(data) {
+            for(var i = 0; i < data.length; i++) {
+                addRow(data[i].name, data[i].score);
+            }
+        });
+    </script>
+    
+    <script>
         var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?", "This organization demanded a provision of indemnity in the “Solemn Engagement.” The Earl of Essex was prevented from leading this force by the Self-Denying Ordinance. Men opposed to this force were removed from office in Pride’s Purge. Thomas (*) Fairfax led this group to victory at Naseby against Charles I. Oliver Cromwell was a cavalry commander in—for 10 points—what Roundhead army that won the First English Civil War?"];
         var answers = [
             ["Colors", "color", "colors", "farbe~Zur Far=", "farbelenhre~Zur Far="],
