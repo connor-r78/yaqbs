@@ -19,7 +19,6 @@ io.sockets.on("connection", function(socket) {
   SOCKET_LIST[socket.id] = socket;
   
   console.log("socket connection");
-  socket.on("buzz");
   socket.on("getQuestionNum",function(data) {
     var questionNum = Math.floor(Math.random() * data.questionsLength);
     socket.emit("questionNum", {
@@ -28,7 +27,7 @@ io.sockets.on("connection", function(socket) {
     console.log("questionNum broadcasted was " + questionNum);
   });
 });
-/*
+
 setInterval(function() {
   var pack = [];
   for(var i in SOCKET_LIST) {
@@ -45,5 +44,3 @@ setInterval(function() {
       socket.emit("update",pack);
   }
 },1000/1);
-
-*/
