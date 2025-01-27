@@ -9,12 +9,17 @@ app.use("/client",express.static(__dirname + "/client"));
 
 serv.listen(2000);
 
+var SOCKET_LIST = {};
+
 var io = require("socket.io") (serv,{});
 io.sockets.on("connection", function(socket) {
+  socket.id = Math.random();
+  socket.name = "";
+  socket.score = 0;
+  SOCKET_LIST[socket.id] = socket;
+  
   console.log("socket connection");
-  socket.on("buzz",function(data) {
-    console.log("buzz from " + data.playerID);
-  });
+  socket.on("buzz");
   socket.on("getQuestionNum",function(data) {
     var questionNum = Math.floor(Math.random() * data.questionsLength);
     socket.emit("questionNum", {
@@ -23,3 +28,19 @@ io.sockets.on("connection", function(socket) {
     console.log("questionNum broadcasted was " + questionNum);
   });
 });
+
+setInterval(function() {
+  var pack = [];
+  for(var i in SOCKET_LIST) {
+    var socket = SOCKET_LIST[i];
+    socket.score ++;
+    pack.push({
+      x:socket.x,
+      y:socket.y
+    });
+  }
+  for(var i in SOCKET_LIST) {
+      var socket = SOCKET_LIST[i];
+      socket.emit("update",pack);
+  }
+},1000/1);
