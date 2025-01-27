@@ -12,6 +12,7 @@ serv.listen(2000);
 var SOCKET_LIST = {};
 
 var io = require("socket.io") (serv,{});
+const socket = io();
 
 socket.buzzed = false;
 
