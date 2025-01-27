@@ -11,9 +11,10 @@ serv.listen(2000);
 
 var SOCKET_LIST = {};
 
+var io = require("socket.io") (serv,{});
+
 socket.buzzed = false;
 
-var io = require("socket.io") (serv,{});
 io.sockets.on("connection", function(socket) {
   socket.id = Math.random();
   socket.name = "";
