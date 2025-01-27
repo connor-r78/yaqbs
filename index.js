@@ -26,6 +26,11 @@ io.sockets.on("connection", function(socket) {
     });
     console.log("questionNum broadcasted was " + questionNum);
   });
+
+  socket.on("disconnect", function() {
+    delete SOCKET_LIST[socket.id];
+  });
+  
 });
 
 setInterval(function() {
