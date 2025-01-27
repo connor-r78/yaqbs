@@ -41,6 +41,8 @@ setInterval(function() {
   }
   for(var i in SOCKET_LIST) {
       var socket = SOCKET_LIST[i];
+      console.log("yay");
       socket.emit("update",pack);
   }
 },1000/1);
+
