@@ -24,17 +24,25 @@
         td, th {
           border: 1px solid #000000;
           background-color: #ffffff;
-          text-align: left;
+          text-align: center;
           padding: 8px;
+        }
+        tr {
+          text-align: center;
         }
         .row:after {
             content: "";
             display: table;
             clear: both;
         }
-        .column {
+        .columnLeft {
             float: left;
-            width: 50%;
+            width: 70%;
+            padding: 10px;
+        }
+        .columnRight {
+            float: left;
+            width: 30%;
             padding: 10px;
         }
         #answer {
@@ -77,12 +85,12 @@
     <h1>yaqbs</h1>
     
     <div class = "row">
-    	<div class = "column">
+    	<div class = "columnLeft">
         	<button id="buzzButton" onclick="recordBuzz()">Buzz</button>
             <button id="nextButton">Next</button>
             <p id="question">Question: </p>
         </div>
-        <div class = "column">
+        <div class = "columnRight">
         	<table id = "scoreTable">
               <tr>
                   <th>Name</th>
@@ -140,8 +148,12 @@
     <script>
         var questions = ["The arrangement of these things was the subject of Michel Chevreul’s law of simultaneous contrast. These things were put on a “sphere” by Philipp Otto Runge  after correspondence with an author who proposed a “theory” of them in his book Zur Farbenlehre. An “additive” method for the (*) “mixing” of these things is commonly known by the initialism “RGB.” For 10 points—what things appear on a “wheel” including primary ones such as blue?", "This organization demanded a provision of indemnity in the “Solemn Engagement.” The Earl of Essex was prevented from leading this force by the Self-Denying Ordinance. Men opposed to this force were removed from office in Pride’s Purge. Thomas (*) Fairfax led this group to victory at Naseby against Charles I. Oliver Cromwell was a cavalry commander in—for 10 points—what Roundhead army that won the First English Civil War?"];
         var answers = [
-            ["Colors", "color", "colors", "farbe~Zur Far=", "farbelenhre~Zur Far="],
-            ["The New Model Army", "new model", "new model army", "the new model army", "%parliamentary army", "%parliamentarian army", "%roundhead~what Round=", "%roundheads~what Round="]
+            ["Colors", "color", "farbe~Zur Far="],
+            ["The New Model Army", "new model", "%parliamentary army", "%parliamentarian army", "%roundhead~what Round="]
+        ];
+        var rawAnswers = [
+            [NULL, "color", "farbe"],
+            [NULL, "new model", "parliamentary army", "parliamentarian army", "roundhead"]
         ];
     
         var clickerButton = document.getElementById("buzzButton");
@@ -187,9 +199,12 @@
 
         function evalAnswer(answer) {
             var acceptedAnswers = answers[questionNum];
+            var rawAcceptedAnswers = rawAnswers[questionNum];
             for (i = 0; i < acceptedAnswers.length; i++) {
                 evalStr = acceptedAnswers[i];
-                if (evalStr.includes(answer) && answer != "" && answer != " ") {
+                rawEvalStr = rawAcceptedAnswers[i];
+                if (answer.includes(rawEvalStr)) {
+                    answer = rawEvalStr;
                     if (!evalStr.includes("=")) {
                         var grabAns = document.getElementById("answer");
                         if (!evalStr.includes("%")) {
@@ -301,6 +316,14 @@
           // Add event listener for the Answer button
           answerButton.addEventListener("click", answerClick);
       };
+
+      socket.on("update", function(data) {
+        if (data.buzzed) {
+          clickerButton.disabled = true;
+        } else {
+          clickerButton.disabled = false;
+        }
+      });
 
       // Add event listener for the Buzz button
       clickerButton.addEventListener("click", buzzClick);
