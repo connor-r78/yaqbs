@@ -35,8 +35,8 @@ setInterval(function() {
     var socket = SOCKET_LIST[i];
     socket.score ++;
     pack.push({
-      x:socket.x,
-      y:socket.y
+      name:socket.name,
+      score:socket.score
     });
   }
   for(var i in SOCKET_LIST) {
