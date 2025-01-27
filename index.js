@@ -12,14 +12,12 @@ serv.listen(2000);
 var SOCKET_LIST = {};
 
 var io = require("socket.io") (serv,{});
-const socket = io();
-
-socket.buzzed = false;
 
 io.sockets.on("connection", function(socket) {
   socket.id = Math.random();
   socket.name = "";
   socket.score = 0;
+  socket.buzzed = false;
   SOCKET_LIST[socket.id] = socket;
   
   console.log("socket connection");
