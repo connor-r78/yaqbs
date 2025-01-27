@@ -11,6 +11,8 @@ serv.listen(2000);
 
 var SOCKET_LIST = {};
 
+socket.buzzed = false;
+
 var io = require("socket.io") (serv,{});
 io.sockets.on("connection", function(socket) {
   socket.id = Math.random();
@@ -40,11 +42,12 @@ setInterval(function() {
     socket.score ++;
     pack.push({
       name:socket.name,
-      score:socket.score
+      score:socket.score,
+      buzzed:socket.buzzed
     });
   }
   for(var i in SOCKET_LIST) {
       var socket = SOCKET_LIST[i];
       socket.emit("update",pack);
   }
-},1000/1);
+},1000/3);
