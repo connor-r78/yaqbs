@@ -85,8 +85,9 @@
     </div>
 
     <script>
+        var table = document.getElementById("scoreTable");
+        
         function addRow(cell1Str, cell2Str) {
-            var table = document.getElementById("scoreTable");
             var row = table.insertRow(2);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
@@ -94,9 +95,40 @@
             cell2.innerHTML = cell2Str;
         }
 
+        function deleteRows(startingRow, numRows) {
+            for (i = 0; i < numRows - 1; i++) {
+                table.deleteRow(i + startingRow);
+            }
+        }
+
+        function sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("myTable");
+            switching = true;
+            while (switching) {
+              switching = false;
+              rows = table.rows;
+              for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+                if (parseInt(x.innerHTML) > parseInt(y.innerHTML)) {
+                  shouldSwitch = true;
+                  break;
+                }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+            }
+          }
+        }
+
         socket.on("update", function(data) {
-            for(var i = 0; i < data.length; i++)
+            for(var i = 0; i < data.length; i++) {
                 addRow(data[i].name, data[i].score);
+            }
+            deleteRows(data.length, data.length)
         });
 
     </script>
@@ -123,7 +155,7 @@
         var question = " ";
         
         clickerButton.disabled = true;
-        
+      
         function incorrect() {
             var grabAns = document.getElementById("answer");
             grabAns.setAttribute("id", "answer")
